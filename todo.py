@@ -10,11 +10,11 @@ def remove_task():
 
     task = input("Which task would you like to remove?: ")
 
-    if task in tasks: tasks.remove(task)
+    if task in tasks:
+        tasks.remove(task)
+        print(f"Removed task: {task}")
 
-    else: 
-        print("That task couldnt be found")
-        exit()
+    else: print("Task not found...")
 
 
 
@@ -31,7 +31,6 @@ def add_task():
 def print_menu():
 
     print("====Welcome to the Crispy Todo List====")
-    print("What would you like to do?\n")
 
     print("1. Add a task")
     print("2. Remove a task")
@@ -52,7 +51,7 @@ if __name__ == "__main__":
 
         except ValueError:
             print("Invalid choice please select a number between 1-4")
-            
+            continue
 
         if choice == 1: add_task()
         
