@@ -1,4 +1,24 @@
 import json
+import os
+
+TASK_FILE = "tasks.json"
+
+def load_task():
+
+    if os.path.exists(TASK_FILE):
+        with open(TASK_FILE, "r") as file:
+            return json.load(file)
+        
+    return []
+
+# Saving tasks that the user wanted to the json file
+# Done this by setting write permission in the file and adding the task
+# If the file doesnt exist it is created and if it already exists it is over written
+# After writing the file is automatically closed
+def save_tasks():
+
+    with open(TASK_FILE) as file:
+        json.dump(tasks, file, indent=4)
 
 def print_tasks():
 
