@@ -23,7 +23,7 @@ def add_task():
     print("What task would you like to add")
     add = input()
 
-    tasks.append("HELLOW")
+    tasks.append(add)
     
     
 
@@ -42,30 +42,27 @@ def print_menu():
 
 if __name__ == "__main__":
 
-    tasks = []
-
     while True:
+
+        tasks = []
+
         print_menu()
+        try:
+            choice = int(input("What would you like to do?: "))
 
-        choice = input()
+        except ValueError:
+            print("Invalid choice please select a number between 1-4")
+            
 
-        if choice == 1: 
-            if len(tasks) >= 10: 
-                print("You currently have more than 10 tasks...\n")
-                print("Stop being a lazy bum and get shit done...")
-                exit()
-            else: add_task()
+        if choice == 1: add_task()
         
-        elif choice == 2 : 
-            if len(tasks) == 0: 
-                print("You currently have no tasks...\n")
-                print("Would you like to add one?")
-                choice = input()
-                if choice == 'y': add_task()
-                elif choice == 'n': exit()
-            else : remove_task()
+        elif choice == 2 : remove_task()
 
         elif choice == 3 : print_tasks()
 
-        elif choice == 4 : exit()
+        elif choice == 4 :
+            print("See you later!")
+            break
+
+        else : print("Invalid choice please select a number between 1-4")
 
