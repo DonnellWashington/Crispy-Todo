@@ -1,7 +1,14 @@
+import json
+
 def print_tasks():
 
-    for task in tasks:
-        print(task)
+    if not tasks: print("You currently have no tasks")
+
+    else:
+        print("\nHere are your tasks:")
+        for i, task in enumerate(tasks, 1):
+            print(f"{i}. {task}")
+
 
 
 def remove_task():
@@ -20,13 +27,14 @@ def remove_task():
 
 def add_task():
 
-    print("What task would you like to add")
-    add = input()
+    if len(tasks) >= 10 : 
+        print("You have to many task! Stop being a lazy bum and get shit done first...")
+        return
 
+    add = input("What task would you like to add?: ")
     tasks.append(add)
+    print(f"Added tasks: {add}")
     
-    
-
 
 def print_menu():
 
