@@ -3,13 +3,17 @@ import os
 
 TASK_FILE = "tasks.json"
 
+
+# A function to load the tasks into the json file
+# File is opened in read mode
+# Added error checking for if and or when the file doesnt exist
 def load_task():
 
-    if os.path.exists(TASK_FILE):
+    try:
         with open(TASK_FILE, "r") as file:
             return json.load(file)
-        
-    return []
+    except FileNotFoundError:
+        return []
 
 # Saving tasks that the user wanted to the json file
 # Done this by setting write permission in the file and adding the task
