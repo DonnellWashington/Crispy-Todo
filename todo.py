@@ -1,6 +1,8 @@
+import os
 import spacy
 import dateparser
 import json
+
 
 nlp = spacy.load("en_core_web_sm")
 TASK_FILE = "tasks.json"
@@ -25,18 +27,33 @@ def handle_nlp_command(command):
 
     else:
         print("Sorry, I didnt understand that.")
+# A function to detect the command in the users tasks (add/remove/show) and such
+# Detect verbs, tasks and dates
+def detect_command(user_input):
 
-def detect_command(command):
+    doc = nlp(user_input.lower())
 
-    doc = nlp(command)
+    verbs = [token.lemm_ for token in doc if token.pos_ == "VERB"]
+    nouns = [token.lemm_ for token in doc if token.pos_ == ["NOUN", "PROPN"]]
 
-    for token in doc:
-        if token.lemma__ in ["add", "include"]:
-            return "add"
-        elif token.lemm__ in ["remove", "delete", "clear"]:
-            return "remove"
-        
-    return None
+    detected_date = dateparser.parse(user_input)
+    format_date = detected_date.strftime("%Y-%m-%d") if detected_date else None
+
+    if "add" in verbs or "create" in verbs:
+        task = " ".join(nouns)
+        return ("add", task, format_date)
+    
+    elif "remove" in verbs or "delete" in verbs:
+        task = " ".join(nouns)
+        return ("remove", task, None)
+    
+    elif "show" in verbs or "display" in verbs or "list" in verbs:
+        return ("display", None, None)
+    
+    elif "quit" in verbs or "exit" in verbs:
+        return ("quit", None, None)
+
+    return("unknown", None, None)
 
 # Extract main task description and detect due dates if a there are any
 def extract_tasks(command):
@@ -75,9 +92,9 @@ def print_tasks():
     if not tasks: print("You currently have no tasks")
 
     else:
-        print("\nHere are your tasks:")
+        print("\n==== Your Tasks ====")
         for i, task in enumerate(tasks, 1):
-            print(f"{i}. {task}")
+            print(f"{i}. {task} (Due: {task['due_date'] or 'No due date'})")
 
 
 
@@ -85,7 +102,7 @@ def remove_task():
 
     print_tasks()
 
-    task = input("Which task would you like to remove?: ")
+    task = input("Which number task would you like to remove?: ")
 
     if task in tasks:
         tasks.remove(task)
@@ -95,18 +112,21 @@ def remove_task():
     else: print("Task not found...")
 
 
-
+# Add a new task with natural language processing
 def add_task():
 
     if len(tasks) >= 10 : 
-        print("You have to many task! Stop being a lazy bum and get shit done first...")
+        print("You have too many task! Stop being a lazy bum and get shit done first...")
         return
 
     add = input("What task would you like to add?: ")
-    tasks.append(add)
-    save_tasks()
-    print(f"Added tasks: {add}")
-    
+    extracted_task = extract_tasks(add)
+
+    if extracted_task["task"]:
+        tasks.append(extracted_task)
+        save_tasks()
+        print(f"Added tasks: {extracted_task}")
+    else : print("Sorry I couldnt understand that. Please try again...")
 
 def print_menu():
 
@@ -126,20 +146,21 @@ if __name__ == "__main__":
     while True:
 
         print_menu()
+
         try:
-            choice = int(input("What would you like to do?: "))
+            user_input = int(input("What would you like to do?: "))
 
         except ValueError:
             print("Invalid choice please select a number between 1-4")
             continue
 
-        if choice == 1: add_task()
+        if user_input == 1: add_task()
         
-        elif choice == 2 : remove_task()
+        elif user_input == 2 : remove_task()
 
-        elif choice == 3 : print_tasks()
+        elif user_input == 3 : print_tasks()
 
-        elif choice == 4 :
+        elif user_input == 4 :
             print("See you later!")
             break
 
