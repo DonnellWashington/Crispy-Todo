@@ -1,2 +1,2 @@
 # Crispy-Todo
-Normal todo list enhanced with machine learning (soon to come). 
+Normal todo list enhanced with natural language processing. 
