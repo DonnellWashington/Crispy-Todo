@@ -1,7 +1,10 @@
+import spacy
 import json
-import os
+import dateparser
 
+nlp = spacy.load("en_core_web_sm")
 TASK_FILE = "tasks.json"
+
 
 
 # A function to load the tasks into the json file
