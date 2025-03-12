@@ -6,13 +6,14 @@ TASK_FILE = "tasks.json"
 
 # A function to load the tasks into the json file
 # File is opened in read mode
-# Added error checking for if and or when the file doesnt exist
+# Added error checking for if the file might not exist 
+# Retunr an empty list list if the file is missing or empty
 def load_task():
 
     try:
         with open(TASK_FILE, "r") as file:
             return json.load(file)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return []
 
 # Saving tasks that the user wanted to the json file
@@ -21,7 +22,7 @@ def load_task():
 # After writing the file is automatically closed
 def save_tasks():
 
-    with open(TASK_FILE) as file:
+    with open(TASK_FILE, "w") as file:
         json.dump(tasks, file, indent=4)
 
 def print_tasks():
@@ -43,6 +44,7 @@ def remove_task():
 
     if task in tasks:
         tasks.remove(task)
+        save_tasks()
         print(f"Removed task: {task}")
 
     else: print("Task not found...")
@@ -57,6 +59,7 @@ def add_task():
 
     add = input("What task would you like to add?: ")
     tasks.append(add)
+    save_tasks()
     print(f"Added tasks: {add}")
     
 
@@ -73,9 +76,9 @@ def print_menu():
 
 if __name__ == "__main__":
 
-    while True:
+    tasks = load_task()
 
-        tasks = []
+    while True:
 
         print_menu()
         try:
