@@ -5,14 +5,49 @@ import json
 nlp = spacy.load("en_core_web_sm")
 TASK_FILE = "tasks.json"
 
+def handle_nlp_command(command):
+    
+    action = detect_command(command)
+    task = extract_tasks(command)
 
-# A function to iterate over user input and find nouns and verbs
-# Then if found add the word to the list
+    if action == "add":
+        tasks.append(task)
+        save_tasks()
+        print(f"Added task: {task}")
+
+    elif action == "remove":
+        if tasks in tasks:
+            tasks.remove(task)
+            save_tasks()
+            print(f"Remove task: {task}")
+        else:
+            print("Task not found...")
+
+    else:
+        print("Sorry, I didnt understand that.")
+
+def detect_command(command):
+
+    doc = nlp(command)
+
+    for token in doc:
+        if token.lemma__ in ["add", "include"]:
+            return "add"
+        elif token.lemm__ in ["remove", "delete", "clear"]:
+            return "remove"
+        
+    return None
+
+# Extract main task description and detect due dates if a there are any
 def extract_tasks(command):
 
     doc = nlp(command)
     keywords = [token.text for token in doc if token.pos_ in ("NOUN", "VERB")]
-    return " ".join(keywords)
+    task_description = " ". join(keywords)
+
+    parsed_date = dateparser.parse(command)
+
+    return {"task": task_description, "due_date": str(parsed_date) if parsed_date else None}
 
 # A function to load the tasks into the json file
 # File is opened in read mode
