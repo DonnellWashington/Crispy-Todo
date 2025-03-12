@@ -1,11 +1,18 @@
 import spacy
-import json
 import dateparser
+import json
 
 nlp = spacy.load("en_core_web_sm")
 TASK_FILE = "tasks.json"
 
 
+# A function to iterate over user input and find nouns and verbs
+# Then if found add the word to the list
+def extract_tasks(command):
+
+    doc = nlp(command)
+    keywords = [token.text for token in doc if token.pos_ in ("NOUN", "VERB")]
+    return " ".join(keywords)
 
 # A function to load the tasks into the json file
 # File is opened in read mode
